@@ -40,34 +40,26 @@ plt.tight_layout()
 plt.show()
 
 
-def predict(image_path, model, top_k):
-    processed_img = process_image(image_path)
-    processed_img = np.expand_dims(processed_img.numpy(), axis=0)
-    predictions = model.predict(processed_img)
+def predict(image_path, model, top_k=5):
+    processed_image = process_image(image_path)
+
+    predictions = model.predict(processed_image)
     top_k_indices = np.argsort(predictions[0])[-top_k:][::-1]
-    top_k_probs = predictions[0][top_k_indices]
-    top_k_classes = [str(i) for i in top_k_indices]
-    return top_k_classes, top_k_probs
+    top_k_values = predictions[0][top_k_indices]
+
+    return top_k_indices, top_k_values
 
 
-def plot_with_predictions(image_path, model, top_k):
-    img = process_image(image_path)
+def plot_predictions(image_path, model, class_names, top_k=5):
+    processed_image = process_image(image_path)
 
-    top_k_classes, top_k_probs = predict(image_path,
-                                         model, top_k,
-                                         class_labels)
+    top_k_indices, top_k_values = predict(image_path, model, top_k)
 
-    disp_img = plt.imread(image_path)
-
-    plt.figure(figsize=(8, 6))
-
-    plt.imshow(disp_img)
+    plt.imshow(im.load_img(image_path))
     plt.axis('off')
 
-    plt.title(f"Top {top_k} Predictions", fontsize=16)
+    plt.title("Top K Predictions:")
+    for i in range(len(top_k_indices)):
+        plt.text(0, i, f"{class_names[str(top_k_indices[i])]}: {top_k_values[i]:.2f}", fontsize=12)
 
-    for i in range(top_k):
-        plt.text(10, 220 + i * 30,
-                 f"{i + 1}: Class {top_k_classes[i]} - Probability: {top_k_probs[i]:.4f}",
-                 fontsize=12, color='white', backgroundcolor='black')
     plt.show()
