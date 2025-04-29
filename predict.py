@@ -29,7 +29,7 @@ image_path = './test_images/hard-leaved_pocket_orchid.jpg'
 im = Image.open(image_path)
 test_image = np.asarray(im)
 
-processed_test_image = process_image(test_image)
+processed_test_image = process_image(image_path) 
 
 fig, (ax1, ax2) = plt.subplots(figsize=(10,10), ncols=2)
 ax1.imshow(test_image)
@@ -55,7 +55,7 @@ def plot_predictions(image_path, model, class_names, top_k=5):
 
     top_k_indices, top_k_values = predict(image_path, model, top_k)
 
-    plt.imshow(im.load_img(image_path))
+    plt.imshow(image.load_img(image_path))  
     plt.axis('off')
 
     plt.title("Top K Predictions:")
