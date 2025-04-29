@@ -60,7 +60,8 @@ def plot_predictions(image_path, model, class_names, top_k=5):
 
     plt.title("Top K Predictions:")
     for i in range(len(top_k_indices)):
-        plt.text(0, i, f"{class_names[top_k_indices[i]]}: {top_k_values[i]:.2f}", fontsize=12)
-
+        plt.text(0, i * 20, f"{class_names[top_k_indices[i]]}: {top_k_values[i]:.2f}", fontsize=12)
+        
     plt.show()
+
 
