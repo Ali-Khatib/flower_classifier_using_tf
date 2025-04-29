@@ -22,6 +22,7 @@ def process_image(image_path):
     img = tf.image.resize(img, [224, 224])
     img = img / 255.0
     tensor_img = tf.convert_to_tensor(img)
+    tensor_img = tf.expand_dims(tensor_img, axis=0)  
     return tensor_img
 
 
@@ -42,11 +43,10 @@ plt.show()
 
 def predict(image_path, model, top_k=5):
     processed_image = process_image(image_path)
-
     predictions = model.predict(processed_image)
     top_k_indices = np.argsort(predictions[0])[-top_k:][::-1]
     top_k_values = predictions[0][top_k_indices]
-
+    
     return top_k_indices, top_k_values
 
 
@@ -55,11 +55,12 @@ def plot_predictions(image_path, model, class_names, top_k=5):
 
     top_k_indices, top_k_values = predict(image_path, model, top_k)
 
-    plt.imshow(image.load_img(image_path))  
+    plt.imshow(Image.open(image_path))  
     plt.axis('off')
 
     plt.title("Top K Predictions:")
     for i in range(len(top_k_indices)):
-        plt.text(0, i, f"{class_names[str(top_k_indices[i])]}: {top_k_values[i]:.2f}", fontsize=12)
+        plt.text(0, i, f"{class_names[top_k_indices[i]]}: {top_k_values[i]:.2f}", fontsize=12)
 
     plt.show()
+
